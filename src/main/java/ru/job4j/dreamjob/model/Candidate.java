@@ -47,6 +47,10 @@ public class Candidate {
         this.description = description;
     }
 
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

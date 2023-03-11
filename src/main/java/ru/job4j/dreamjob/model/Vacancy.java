@@ -13,12 +13,6 @@ public class Vacancy {
     public Vacancy() {
     }
 
-    public Vacancy(int id, String title) {
-        this.id = id;
-        this.title = title;
-        creationDate = LocalDateTime.now();
-    }
-
     public Vacancy(int id, String title, String description) {
         this.id = id;
         this.title = title;
@@ -48,6 +42,10 @@ public class Vacancy {
 
     public LocalDateTime getCreationDate() {
         return creationDate;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
