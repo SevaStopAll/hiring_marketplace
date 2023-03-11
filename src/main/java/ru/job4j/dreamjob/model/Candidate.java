@@ -9,6 +9,9 @@ public class Candidate {
     private String description;
     private LocalDateTime creationDate;
 
+    public Candidate() {
+    }
+
     public Candidate(int id, String name, String description) {
         this.id = id;
         this.name = name;
@@ -34,6 +37,14 @@ public class Candidate {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
