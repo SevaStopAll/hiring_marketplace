@@ -30,8 +30,8 @@ public class Sql2oVacancyRepository implements VacancyRepository {
                     .addParameter("visible", vacancy.getVisible())
                     .addParameter("cityId", vacancy.getCityId())
                     .addParameter("fileId", vacancy.getFileId());
-            int generatedId = query.executeUpdate().getKey(Integer.class);
-            vacancy.setId(generatedId);
+            int generatedId1 = query.executeUpdate().getKey(Integer.class);
+            vacancy.setId(generatedId1);
             return vacancy;
         }
     }
