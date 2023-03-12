@@ -10,6 +10,7 @@ public class Candidate {
     private LocalDateTime creationDate;
 
     public Candidate() {
+        creationDate = LocalDateTime.now();
     }
 
     public Candidate(int id, String name, String description) {
