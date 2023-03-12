@@ -22,7 +22,7 @@ public class MemoryVacancyRepository implements VacancyRepository {
         save(new Vacancy(0, "Junior Java Developer", "Dev with Java and Kotlin", true, 2));
         save(new Vacancy(0, "Junior+ Java Developer", "Developer 1 year + exp", true, 3));
         save(new Vacancy(0, "Middle Java Developer", "3+ years of experience with MVC", true, 1));
-        save(new Vacancy(0, "Middle+ Java Developer", "Developer with strong microservices knoledge", true, 1));
+        save(new Vacancy(0, "Middle+ Java Developer", "Developer with strong microservices knowledge", true, 1));
         save(new Vacancy(0, "Senior Java Developer", "5 + years, Java, REST, Postgres", true, 2));
     }
 
@@ -40,7 +40,10 @@ public class MemoryVacancyRepository implements VacancyRepository {
 
     @Override
     public boolean update(Vacancy vacancy) {
-        return vacancies.computeIfPresent(vacancy.getId(), (id, oldVacancy) -> new Vacancy(oldVacancy.getId(), vacancy.getTitle(), vacancy.getDescription(), vacancy.getVisible(), vacancy.getCityId())) != null;
+        return vacancies
+                .computeIfPresent(vacancy.getId(), (id, oldVacancy) ->
+                new Vacancy(oldVacancy.getId(), vacancy.getTitle(), vacancy.getDescription(),
+                        vacancy.getVisible(), vacancy.getCityId())) != null;
     }
 
     @Override
