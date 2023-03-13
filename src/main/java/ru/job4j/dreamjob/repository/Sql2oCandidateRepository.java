@@ -20,14 +20,14 @@ public class Sql2oCandidateRepository implements CandidateRepository {
         try (var connection = sql2o.open()) {
             var sql = """
                     INSERT INTO candidates(name, description, creation_date, visible, city_id, file_id)
-                    VALUES (:name, :description, :creationDate, :visible, :cityID, :fileId)           
+                    VALUES (:name, :description, :creationDate, :visible, :cityId, :fileId)           
                     """;
             var query = connection.createQuery(sql, true)
                     .addParameter("name", candidate.getName())
                     .addParameter("description", candidate.getDescription())
                     .addParameter("creationDate", candidate.getCreationDate())
                     .addParameter("visible", candidate.getVisible())
-                    .addParameter("cityID", candidate.getCityId())
+                    .addParameter("cityId", candidate.getCityId())
                     .addParameter("fileId", candidate.getFileId());
             int generatedId = query.executeUpdate().getKey(Integer.class);
             candidate.setId(generatedId);
@@ -57,9 +57,9 @@ public class Sql2oCandidateRepository implements CandidateRepository {
         var query = connection.createQuery(sql)
                 .addParameter("name", candidate.getName())
                 .addParameter("description", candidate.getDescription())
-                .addParameter("creation_date", candidate.getCreationDate())
+                .addParameter("creationDate", candidate.getCreationDate())
                 .addParameter("visible", candidate.getVisible())
-                .addParameter("cityID", candidate.getCityId())
+                .addParameter("cityId", candidate.getCityId())
                 .addParameter("fileId", candidate.getFileId())
                 .addParameter("id", candidate.getId());
         var affectedRows = query.executeUpdate().getResult();
