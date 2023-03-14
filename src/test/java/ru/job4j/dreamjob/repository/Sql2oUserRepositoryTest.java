@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ru.job4j.dreamjob.configuration.DatasourceConfiguration;
 import ru.job4j.dreamjob.model.File;
+import ru.job4j.dreamjob.model.User;
 import ru.job4j.dreamjob.model.Vacancy;
 
 import java.time.temporal.ChronoUnit;
@@ -15,6 +16,7 @@ import java.util.Properties;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class Sql2oUserRepositoryTest {
@@ -40,13 +42,15 @@ public class Sql2oUserRepositoryTest {
 
     @Test
     void whenSave() {
-        var vacancy = sql2oVacancyRepository.save(new Vacancy(0, "title", "description", creationDate, true, 1, file.getId()));
-        var savedVacancy = sql2oVacancyRepository.findById(vacancy.getId()).get();
+        var user = sql2oUserRepository.save(new User(0, "ya11aaa11yaaa@ya.ru", "description", "111")).get();
+        var savedUser = sql2oUserRepository.findByEmailAndPassword(user.getEmail(), user.getPassword()).get();
+        assertThat(user).isEqualTo(savedUser);
     }
 
     @Test
-    void whenGet() {
-
+    void whenSaveTwoUsers() {
+        var user = sql2oUserRepository.save(new User(0, "sevas@ya.ru", "description", "111")).get();
+        assertThatThrownBy(() -> sql2oUserRepository.save(new User(0, "sevas@ya.ru", "description", "111"))).isInstanceOf(org.sql2o.Sql2oException.class);
     }
 
 }

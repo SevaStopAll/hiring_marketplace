@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.dreamjob.dto.FileDto;
 import ru.job4j.dreamjob.model.Candidate;
 import ru.job4j.dreamjob.model.User;
+import ru.job4j.dreamjob.model.Vacancy;
 import ru.job4j.dreamjob.service.UserService;
 
 @Controller
@@ -33,5 +34,20 @@ public class UserController {
             return "errors/404";
         }
         return "redirect:/index";
+    }
+
+    @GetMapping("/login")
+    public String getLoginPage() {
+        return "users/login";
+    }
+
+    @PostMapping("/login")
+    public String loginUser(@ModelAttribute User user, Model model) {
+        var userOptional = userService.findByEmailAndPassword(user.getEmail(), user.getPassword());
+        if (userOptional.isEmpty()) {
+            model.addAttribute("error", "Почта или пароль введены неверно");
+            return "users/login";
+        }
+        return "redirect:/vacancies";
     }
 }
