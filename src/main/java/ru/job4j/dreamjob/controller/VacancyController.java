@@ -6,10 +6,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.dreamjob.dto.FileDto;
+import ru.job4j.dreamjob.model.User;
 import ru.job4j.dreamjob.model.Vacancy;
 import ru.job4j.dreamjob.service.CityService;
 import ru.job4j.dreamjob.service.FileService;
 import ru.job4j.dreamjob.service.VacancyService;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/vacancies")
@@ -27,20 +30,49 @@ public class VacancyController {
     }
 
     @GetMapping
-    public String getAll(Model model) {
+    public String getAll(Model model, HttpSession session) {
+        var user = (User) session.getAttribute("user");
+        if (user == null) {
+            user = new User();
+            user.setName("Гость");
+        }
         model.addAttribute("vacancies", vacancyService.findAll());
+        model.addAttribute("user", user);
         return "vacancies/list";
     }
 
+    /*@GetMapping({"/", "/index"})
+    public String getIndex(Model model, HttpSession session) {
+        var user = (User) session.getAttribute("user");
+        if (user == null) {
+            user = new User();
+            user.setName("Гость");
+        }
+        model.addAttribute("user", user);
+        return "index";
+    }*/
+
     @GetMapping("/create")
-    public String getCreationPage(Model model) {
+    public String getCreationPage(Model model, HttpSession session) {
+        var user = (User) session.getAttribute("user");
+        if (user == null) {
+            user = new User();
+            user.setName("Гость");
+        }
         model.addAttribute("cities", cityService.findAll());
+        model.addAttribute("user", user);
         return "vacancies/create";
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Vacancy vacancy, @RequestParam MultipartFile file, Model model) {
+    public String create(@ModelAttribute Vacancy vacancy, @RequestParam MultipartFile file, Model model, HttpSession session) {
         try {
+            var user = (User) session.getAttribute("user");
+            if (user == null) {
+                user = new User();
+                user.setName("Гость");
+            }
+            model.addAttribute("user", user);
             vacancyService.save(vacancy, new FileDto(file.getOriginalFilename(), file.getBytes()));
             return "redirect:/vacancies";
         } catch (Exception exception) {
@@ -50,8 +82,14 @@ public class VacancyController {
     }
 
     @GetMapping("/{id}")
-    public String getById(Model model, @PathVariable int id) {
+    public String getById(Model model, @PathVariable int id, HttpSession session) {
         var vacancyOptional = vacancyService.findById(id);
+        var user = (User) session.getAttribute("user");
+        if (user == null) {
+            user = new User();
+            user.setName("Гость");
+        }
+        model.addAttribute("user", user);
         if (vacancyOptional.isEmpty()) {
             model.addAttribute("message", "Вакансия с указанным идентификатором не найдена");
             return "errors/404";
