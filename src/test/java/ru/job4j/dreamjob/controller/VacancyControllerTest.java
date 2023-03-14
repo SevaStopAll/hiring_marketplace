@@ -57,8 +57,8 @@ public class VacancyControllerTest {
 
     @Test
     public void whenRequestVacancyCreationPageThenGetPageWithCities() {
-        var city1 = new City(1, "Москва");
-        var city2 = new City(2, "Санкт-Петербург");
+        var city1 = new City(1, "Moscow");
+        var city2 = new City(2, "Saint-Petersburg");
         var expectedCities = List.of(city1, city2);
         when(cityService.findAll()).thenReturn(expectedCities);
 

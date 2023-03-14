@@ -45,8 +45,9 @@ public class Sql2oUserRepositoryTest {
 
     @Test
     void whenSave() {
-        var user = sql2oUserRepository.save(new User(0, "y@ya.ru", "description", "111"));
-        var savedUser = sql2oUserRepository.findByEmailAndPassword(user.get().getEmail(), user.get().getPassword());
+        User test = new User(0, "ya1@ya.ru", "description", "111");
+        var user = sql2oUserRepository.save(test);
+        var savedUser = sql2oUserRepository.findByEmailAndPassword(test.getEmail(), test.getPassword());
         assertThat(user).isEqualTo(savedUser);
     }
 
