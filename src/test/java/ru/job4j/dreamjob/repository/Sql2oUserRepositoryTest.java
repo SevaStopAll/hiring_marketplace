@@ -1,9 +1,11 @@
 package ru.job4j.dreamjob.repository;
 
+import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.sql2o.Sql2oException;
 import ru.job4j.dreamjob.configuration.DatasourceConfiguration;
 import ru.job4j.dreamjob.model.File;
 import ru.job4j.dreamjob.model.User;
@@ -11,6 +13,7 @@ import ru.job4j.dreamjob.model.Vacancy;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import static java.time.LocalDateTime.now;
@@ -42,15 +45,17 @@ public class Sql2oUserRepositoryTest {
 
     @Test
     void whenSave() {
-        var user = sql2oUserRepository.save(new User(0, "ya11aaa11yaaa@ya.ru", "description", "111")).get();
-        var savedUser = sql2oUserRepository.findByEmailAndPassword(user.getEmail(), user.getPassword()).get();
+        var user = sql2oUserRepository.save(new User(0, "y@ya.ru", "description", "111"));
+        var savedUser = sql2oUserRepository.findByEmailAndPassword(user.get().getEmail(), user.get().getPassword());
         assertThat(user).isEqualTo(savedUser);
     }
 
     @Test
     void whenSaveTwoUsers() {
-        var user = sql2oUserRepository.save(new User(0, "sevas@ya.ru", "description", "111")).get();
-        assertThatThrownBy(() -> sql2oUserRepository.save(new User(0, "sevas@ya.ru", "description", "111"))).isInstanceOf(org.sql2o.Sql2oException.class);
+        sql2oUserRepository.save(new User(0, "rf11sy1@ya.ru", "description", "111"));
+        var expected = Optional.empty();
+        var result = sql2oUserRepository.save(new User(2, "rf11sy1@ya.ru", "description", "111"));
+        assertThat(result).isEqualTo(expected);
     }
 
 }
