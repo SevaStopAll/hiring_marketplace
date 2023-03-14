@@ -53,26 +53,14 @@ public class VacancyController {
     }*/
 
     @GetMapping("/create")
-    public String getCreationPage(Model model, HttpSession session) {
-        var user = (User) session.getAttribute("user");
-        if (user == null) {
-            user = new User();
-            user.setName("Гость");
-        }
+    public String getCreationPage(Model model) {
         model.addAttribute("cities", cityService.findAll());
-        model.addAttribute("user", user);
         return "vacancies/create";
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Vacancy vacancy, @RequestParam MultipartFile file, Model model, HttpSession session) {
+    public String create(@ModelAttribute Vacancy vacancy, @RequestParam MultipartFile file, Model model) {
         try {
-            var user = (User) session.getAttribute("user");
-            if (user == null) {
-                user = new User();
-                user.setName("Гость");
-            }
-            model.addAttribute("user", user);
             vacancyService.save(vacancy, new FileDto(file.getOriginalFilename(), file.getBytes()));
             return "redirect:/vacancies";
         } catch (Exception exception) {
@@ -82,14 +70,8 @@ public class VacancyController {
     }
 
     @GetMapping("/{id}")
-    public String getById(Model model, @PathVariable int id, HttpSession session) {
+    public String getById(Model model, @PathVariable int id) {
         var vacancyOptional = vacancyService.findById(id);
-        var user = (User) session.getAttribute("user");
-        if (user == null) {
-            user = new User();
-            user.setName("Гость");
-        }
-        model.addAttribute("user", user);
         if (vacancyOptional.isEmpty()) {
             model.addAttribute("message", "Вакансия с указанным идентификатором не найдена");
             return "errors/404";

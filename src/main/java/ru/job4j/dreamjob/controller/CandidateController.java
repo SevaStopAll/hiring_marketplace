@@ -31,38 +31,20 @@ public class CandidateController {
         }
 
         @GetMapping
-        public String getAll(Model model, HttpSession session) {
-            var user = (User) session.getAttribute("user");
-            if (user == null) {
-                user = new User();
-                user.setName("Гость");
-            }
-            model.addAttribute("user", user);
+        public String getAll(Model model) {
             model.addAttribute("candidates", candidateService.findAll());
             return "candidates/list";
         }
 
         @GetMapping("/create")
-        public String getCreationPage(Model model, HttpSession session) {
+        public String getCreationPage(Model model) {
             model.addAttribute("cities", cityService.findAll());
-            var user = (User) session.getAttribute("user");
-            if (user == null) {
-                user = new User();
-                user.setName("Гость");
-            }
-            model.addAttribute("user", user);
             return "candidates/create";
         }
 
         @PostMapping("/create")
-        public String create(@ModelAttribute Candidate candidate, @RequestParam MultipartFile file, Model model, HttpSession session) {
+        public String create(@ModelAttribute Candidate candidate, @RequestParam MultipartFile file, Model model) {
             try {
-                var user = (User) session.getAttribute("user");
-                if (user == null) {
-                    user = new User();
-                    user.setName("Гость");
-                }
-                model.addAttribute("user", user);
                 candidateService.save(candidate, new FileDto(file.getOriginalFilename(), file.getBytes()));
                 return "redirect:/candidates";
             } catch (Exception exception) {
@@ -72,13 +54,7 @@ public class CandidateController {
         }
 
         @GetMapping("/{id}")
-        public String getById(Model model, @PathVariable int id, HttpSession session) {
-            var user = (User) session.getAttribute("user");
-            if (user == null) {
-                user = new User();
-                user.setName("Гость");
-            }
-            model.addAttribute("user", user);
+        public String getById(Model model, @PathVariable int id) {
             var candidateOptional = candidateService.findById(id);
             if (candidateOptional.isEmpty()) {
                 model.addAttribute("message", "Кандидат с указанным идентификатором не найден");
