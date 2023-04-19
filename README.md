@@ -5,11 +5,11 @@
 The main task is understanding web application architecture principles, imitating vacancies base. 
 
 ## Features:
-### Регистрация на сайте и авторизация.
+### Р РµРіРёСЃС‚СЂР°С†РёСЏ РЅР° СЃР°Р№С‚Рµ Рё Р°РІС‚РѕСЂРёР·Р°С†РёСЏ.
 
 ![](files/Register.png.png)
 
-### Возможность создавать резюме и вакансии и их последующее редактирование. 
+### Р’РѕР·РјРѕР¶РЅРѕСЃС‚СЊ СЃРѕР·РґР°РІР°С‚СЊ СЂРµР·СЋРјРµ Рё РІР°РєР°РЅСЃРёРё Рё РёС… РїРѕСЃР»РµРґСѓСЋС‰РµРµ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ. 
 ![](files/Create_CV.png.png)
 
 
@@ -24,5 +24,5 @@ The main task is understanding web application architecture principles, imitatin
 - **PostgresSQL 14**
 
 ### Launch.
-Запустите файл Main.java in job4j_cars/src/main/java/job4j_dreamjob
+Р—Р°РїСѓСЃС‚РёС‚Рµ С„Р°Р№Р» Main.java in job4j_cars/src/main/java/job4j_dreamjob
 
