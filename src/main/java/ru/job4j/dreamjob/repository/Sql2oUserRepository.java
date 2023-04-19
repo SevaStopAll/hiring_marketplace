@@ -11,7 +11,11 @@ import java.util.Optional;
 
 @Repository
 public class Sql2oUserRepository implements UserRepository {
-
+    private final static String SAVE_USER = """
+                    INSERT INTO users(email, name, password)
+                    VALUES (:email, :name, :password)           
+                    """;
+    private final static String FIND_USER = "SELECT * FROM users WHERE email = :email AND password = :password";
     private static final Logger LOG = LoggerFactory.getLogger(Sql2oUserRepository.class.getName());
 
     private final Sql2o sql2o;
@@ -23,11 +27,7 @@ public class Sql2oUserRepository implements UserRepository {
     @Override
     public Optional<User> save(User user) {
         try (var connection = sql2o.open()) {
-            var sql = """
-                    INSERT INTO users(email, name, password)
-                    VALUES (:email, :name, :password)           
-                    """;
-            var query = connection.createQuery(sql, true)
+            var query = connection.createQuery(SAVE_USER, true)
                     .addParameter("email", user.getEmail())
                     .addParameter("name", user.getName())
                     .addParameter("password", user.getPassword());
@@ -43,7 +43,7 @@ public class Sql2oUserRepository implements UserRepository {
     @Override
     public Optional<User> findByEmailAndPassword(String email, String password) {
             try (var connection = sql2o.open()) {
-                var query = connection.createQuery("SELECT * FROM users WHERE email = :email AND password = :password");
+                var query = connection.createQuery(FIND_USER);
                 query.addParameter("email", email)
                         .addParameter("password", password);
                 var user = query.executeAndFetchFirst(User.class);

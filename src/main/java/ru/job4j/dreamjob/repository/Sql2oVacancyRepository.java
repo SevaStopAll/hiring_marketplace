@@ -10,6 +10,19 @@ import java.util.Optional;
 @Repository
 public class Sql2oVacancyRepository implements VacancyRepository {
 
+    private static final String CREATE_VACANCY = """
+                      INSERT INTO vacancies(title, description, creation_date, visible, city_id, file_id)
+                      VALUES (:title, :description, :creationDate, :visible, :cityId, :fileId)
+                      """;
+    private static final String DELETE_VACANCY = "DELETE FROM vacancies WHERE id = :id";
+    private static final String UPDATE_VACANCY = """
+                    UPDATE vacancies
+                    SET title = :title, description = :description, creation_date = :creationDate,
+                        visible = :visible, city_id = :cityId, file_id = :fileId
+                    WHERE id = :id
+                    """;
+    private static final String FIND_BY_ID = "SELECT * FROM vacancies WHERE id = :id";
+    private static final String FIND_ALL = "SELECT * FROM vacancies";
     private final Sql2o sql2o;
 
     public Sql2oVacancyRepository(Sql2o sql2o) {
@@ -19,11 +32,7 @@ public class Sql2oVacancyRepository implements VacancyRepository {
     @Override
     public Vacancy save(Vacancy vacancy) {
         try (var connection = sql2o.open()) {
-            var sql = """
-                      INSERT INTO vacancies(title, description, creation_date, visible, city_id, file_id)
-                      VALUES (:title, :description, :creationDate, :visible, :cityId, :fileId)
-                      """;
-            var query = connection.createQuery(sql, true)
+            var query = connection.createQuery(CREATE_VACANCY, true)
                     .addParameter("title", vacancy.getTitle())
                     .addParameter("description", vacancy.getDescription())
                     .addParameter("creationDate", vacancy.getCreationDate())
@@ -39,7 +48,7 @@ public class Sql2oVacancyRepository implements VacancyRepository {
     @Override
     public boolean deleteById(int id) {
         try (var connection = sql2o.open()) {
-            var query = connection.createQuery("DELETE FROM vacancies WHERE id = :id");
+            var query = connection.createQuery(DELETE_VACANCY);
             query.addParameter("id", id);
             var affectedRows = query.executeUpdate().getResult();
             return affectedRows > 0;
@@ -49,13 +58,7 @@ public class Sql2oVacancyRepository implements VacancyRepository {
     @Override
     public boolean update(Vacancy vacancy) {
         try (var connection = sql2o.open()) {
-            var sql = """
-                    UPDATE vacancies
-                    SET title = :title, description = :description, creation_date = :creationDate,
-                        visible = :visible, city_id = :cityId, file_id = :fileId
-                    WHERE id = :id
-                    """;
-            var query = connection.createQuery(sql)
+            var query = connection.createQuery(UPDATE_VACANCY)
                     .addParameter("title", vacancy.getTitle())
                     .addParameter("description", vacancy.getDescription())
                     .addParameter("creationDate", vacancy.getCreationDate())
@@ -71,7 +74,7 @@ public class Sql2oVacancyRepository implements VacancyRepository {
     @Override
     public Optional<Vacancy> findById(int id) {
         try (var connection = sql2o.open()) {
-            var query = connection.createQuery("SELECT * FROM vacancies WHERE id = :id");
+            var query = connection.createQuery(FIND_BY_ID);
             query.addParameter("id", id);
             var vacancy = query.setColumnMappings(Vacancy.COLUMN_MAPPING).executeAndFetchFirst(Vacancy.class);
             return Optional.ofNullable(vacancy);
@@ -81,7 +84,7 @@ public class Sql2oVacancyRepository implements VacancyRepository {
     @Override
     public Collection<Vacancy> findAll() {
         try (var connection = sql2o.open()) {
-            var query = connection.createQuery("SELECT * FROM vacancies");
+            var query = connection.createQuery(FIND_ALL);
             return query.setColumnMappings(Vacancy.COLUMN_MAPPING).executeAndFetch(Vacancy.class);
         }
     }

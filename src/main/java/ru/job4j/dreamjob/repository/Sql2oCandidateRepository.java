@@ -8,7 +8,19 @@ import java.util.Optional;
 
 @Repository
 public class Sql2oCandidateRepository implements CandidateRepository {
-
+    private static final String CREATE_CANDIDATE = """
+                    INSERT INTO candidates(name, description, creation_date, visible, city_id, file_id)
+                    VALUES (:name, :description, :creationDate, :visible, :cityId, :fileId)           
+                    """;
+    private static final String DELETE_CANDIDATE = "DELETE FROM candidates WHERE  id = :id";
+    private static final String UPDATE_CANDIDATE = """
+                UPDATE candidates
+                SET name = :name, description = :description, creation_date = :creationDate,
+                    visible = :visible, city_id = :cityId, file_id = :fileId
+                WHERE id = :id    
+                """;
+    private static final String FIND_BY_ID = "SELECT * FROM candidates where id = :id";
+    private static final String FIND_ALL = "SELECT * FROM candidates";
     private final Sql2o sql2o;
 
     public Sql2oCandidateRepository(Sql2o sql2o) {
@@ -18,11 +30,7 @@ public class Sql2oCandidateRepository implements CandidateRepository {
     @Override
     public Candidate save(Candidate candidate) {
         try (var connection = sql2o.open()) {
-            var sql = """
-                    INSERT INTO candidates(name, description, creation_date, visible, city_id, file_id)
-                    VALUES (:name, :description, :creationDate, :visible, :cityId, :fileId)           
-                    """;
-            var query = connection.createQuery(sql, true)
+            var query = connection.createQuery(CREATE_CANDIDATE, true)
                     .addParameter("name", candidate.getName())
                     .addParameter("description", candidate.getDescription())
                     .addParameter("creationDate", candidate.getCreationDate())
@@ -38,7 +46,7 @@ public class Sql2oCandidateRepository implements CandidateRepository {
     @Override
     public boolean deleteById(int id) {
         try (var connection = sql2o.open()) {
-            var query = connection.createQuery("DELETE FROM candidates WHERE  id = :id");
+            var query = connection.createQuery(DELETE_CANDIDATE);
             query.addParameter("id", id);
             var affectedRows = query.executeUpdate().getResult();
             return affectedRows > 0;
@@ -48,13 +56,7 @@ public class Sql2oCandidateRepository implements CandidateRepository {
     @Override
     public boolean update(Candidate candidate) {
         try (var connection = sql2o.open()) {
-        var sql = """
-                UPDATE candidates
-                SET name = :name, description = :description, creation_date = :creationDate,
-                    visible = :visible, city_id = :cityId, file_id = :fileId
-                WHERE id = :id    
-                """;
-        var query = connection.createQuery(sql)
+        var query = connection.createQuery(UPDATE_CANDIDATE)
                 .addParameter("name", candidate.getName())
                 .addParameter("description", candidate.getDescription())
                 .addParameter("creationDate", candidate.getCreationDate())
@@ -70,7 +72,7 @@ public class Sql2oCandidateRepository implements CandidateRepository {
     @Override
     public Optional<Candidate> findById(int id) {
         try (var connection = sql2o.open()) {
-            var query = connection.createQuery("SELECT * FROM candidates where id = :id");
+            var query = connection.createQuery(FIND_BY_ID);
             query.addParameter("id", id);
             var candidate = query.setColumnMappings(Candidate.COLUMN_MAPPING).executeAndFetchFirst(Candidate.class);
             return Optional.ofNullable(candidate);
@@ -80,7 +82,7 @@ public class Sql2oCandidateRepository implements CandidateRepository {
     @Override
     public Collection<Candidate> findAll() {
             try (var connection = sql2o.open()) {
-                var query = connection.createQuery("SELECT * FROM candidates");
+                var query = connection.createQuery(FIND_ALL);
                 return query.setColumnMappings(Candidate.COLUMN_MAPPING).executeAndFetch(Candidate.class);
             }
         }
